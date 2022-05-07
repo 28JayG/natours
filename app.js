@@ -1,0 +1,28 @@
+
+const express = require('express');
+const morgan = require('morgan');
+
+const tourRouter = require('./routes/tour.route')
+const userRouter = require('./routes/user.route')
+
+const app = express();
+
+//middleware
+app.use(morgan('dev'));
+app.use(express.json());
+
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
+//routes
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
+
+
+
+
+
+module.exports = app
