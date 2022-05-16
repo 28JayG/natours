@@ -55,6 +55,7 @@ exports.updateTour = async (req, res) => {
   try {
     const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
+      runValidators: true,
     });
 
     res.status(201).json({ status: 'success', data: { tour: updatedTour } });
