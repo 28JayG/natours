@@ -1,6 +1,13 @@
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
+process.on('uncaughtException', (err) => {
+  console.log('Unhandled Exception! Shutting down...');
+  console.log(err.name, err.message);
+
+  process.exit(1);
+});
+
 dotenv.config({ path: './config.env' });
 
 const DB = process.env.DB_CONNECT_STRING.replace(
@@ -13,11 +20,23 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => console.log('Connected to DB'));
 
 const app = require('./app');
 
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`app running on port: ${PORT}`));
+const server = app.listen(PORT, () =>
+  console.log(`app running on port: ${PORT}`)
+);
+
+process.on('unhandledRejection', (err) => {
+  console.log('Unhandled Rejection! Shutting down...');
+  console.log(err.name, err.message);
+
+  //let server finsih all on going task and then crash the app
+  server.close(() => {
+    process.exit(1);
+  });
+});
