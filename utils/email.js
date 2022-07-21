@@ -17,7 +17,7 @@ const sendEmail = catchAsync(async (options) => {
     from: 'Jay Gandhi<jaygandhi.32@outlook.com',
     to: options.email,
     subject: options.subject,
-    text: options.text,
+    text: options.message,
   };
   //sendEmail with nodemailer
   await transporter.sendMail(mailOptions);
