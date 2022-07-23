@@ -10,6 +10,7 @@ const AppError = require('./utils/app-error');
 const globalErrorHandler = require('./controllers/error.controllers');
 const tourRouter = require('./routes/tour.route');
 const userRouter = require('./routes/user.route');
+const reviewRouter = require('./routes/review.route');
 
 const app = express();
 const limiter = rateLimit({
@@ -35,7 +36,7 @@ app.use(xss());
 // prevent parameter pollution
 app.use(
   hpp({
-    whitelist: ['duration' ],
+    whitelist: ['duration'],
   })
 );
 //serving static files
@@ -49,6 +50,7 @@ app.use((req, res, next) => {
 //routes
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl}`, 404));
