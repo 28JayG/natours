@@ -35,12 +35,8 @@ exports.createUser = (req, res) => {
   });
 };
 
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'route not defined',
-  });
-};
+//do not try to update password using this
+exports.updateUser = Factory.updateOne(User);
 
 exports.deleteUser = Factory.deleteOne(User);
 
