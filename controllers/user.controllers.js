@@ -13,6 +13,12 @@ const filterObj = (body, ...allowedFields) => {
   return newObj;
 };
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user._id;
+
+  next();
+};
+
 exports.getAllUsers = Factory.getAll(User);
 
 exports.getUser = Factory.getOne(User);
