@@ -21,14 +21,9 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
     .json({ status: 'success', results: users.length, data: { users } });
 });
 
-exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'route not defined',
-  });
-};
+exports.getUser = Factory.getOne(User);
 
-exports.createUser = Factory.createOne(User)
+exports.createUser = Factory.createOne(User);
 
 //do not try to update password using this
 exports.updateUser = Factory.updateOne(User);

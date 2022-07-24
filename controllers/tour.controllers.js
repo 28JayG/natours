@@ -31,23 +31,27 @@ exports.getAllTours = async (req, res, next) => {
   }
 };
 
-exports.getTour = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const tour = await Tour.findById(id).populate('reviews');
+// exports.getTour = catchAsync(async (req, res, next) => {
+//   const { id } = req.params;
+//   const tour = await Tour.findById(id).populate('reviews');
 
-  if (!tour) {
-    return next(new AppError('No tour found by that ID', 404));
-  }
+//   if (!tour) {
+//     return next(new AppError('No tour found by that ID', 404));
+//   }
 
-  res.status(200).json({ status: 'success', data: { tour } });
-});
+//   res.status(200).json({ status: 'success', data: { tour } });
+// });
 
-exports.createTour = catchAsync(async (req, res, next) => {
-  const tourData = req.body;
-  const tour = await Tour.create(tourData);
+exports.getTour = Factory.getOne(Tour, { path: 'reviews' });
 
-  res.status(201).json({ status: 'success', data: tour });
-});
+// exports.createTour = catchAsync(async (req, res, next) => {
+//   const tourData = req.body;
+//   const tour = await Tour.create(tourData);
+
+//   res.status(201).json({ status: 'success', data: tour });
+// });
+
+exports.createTour = Factory.createOne(Tour);
 
 // exports.updateTour = catchAsync(async (req, res, next) => {
 //   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {

@@ -1,3 +1,4 @@
+const AppError = require('../utils/app-error');
 const catchAsync = require('../utils/catch-async');
 
 /** Model is a mongoose mongodb model */
@@ -33,3 +34,18 @@ exports.createOne = (Model) =>
 
     res.status(201).json({ status: 'success', data: doc });
   });
+
+exports.getOne = (Model, populateOptions) =>
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    let query = Model.findById(id);
+    if (populateOptions) query.populate(populateOptions);
+    const doc = await query;
+
+    if (!doc) {
+      return next(new AppError('No document found by that ID', 404));
+    }
+
+    res.status(200).json({ status: 'success', data: { doc } });
+  });
+
