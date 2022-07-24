@@ -116,6 +116,13 @@ tourSchema.virtual('durationInWeeks').get(function () {
   return Math.ceil(this.duration / 7);
 });
 
+//virtual populate
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour', // jo field uthana hai 
+  localField: '_id', // jo review mai value uthae hai vo local mai konsa hai
+});
+
 //Document middleware: runs before .save and .create
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
