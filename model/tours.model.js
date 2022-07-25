@@ -111,6 +111,11 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+tourSchema.index({ price: 1, ratingsAverage: -1 });//indexing helps improve reading performance
+tourSchema.index({ slug: 1 });
+// indexing access patterns dekh kar karna, warna index ka size bahut bada hojata hai
+// high write/read ratio mai indexing sahi nai rahega
+
 //virtual properties - cannot be used in querys, its not actually there in DB
 tourSchema.virtual('durationInWeeks').get(function () {
   return Math.ceil(this.duration / 7);
@@ -119,7 +124,7 @@ tourSchema.virtual('durationInWeeks').get(function () {
 //virtual populate
 tourSchema.virtual('reviews', {
   ref: 'Review',
-  foreignField: 'tour', // jo field uthana hai 
+  foreignField: 'tour', // jo field uthana hai
   localField: '_id', // jo review mai value uthae hai vo local mai konsa hai
 });
 
