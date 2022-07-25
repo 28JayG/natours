@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Tour = require('./tours.model');
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -40,6 +41,46 @@ reviewSchema.pre(/^find/, function (next) {
   });
 
   next();
+});
+
+//static functions can be called on the Model directly,
+//here since we are using aggregate and that can only be called on a Model
+//hence this gives us the Model so this.aggregate is possible
+reviewSchema.statics.calcAverageRatings = async function (tourId) {
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId },
+    },
+    {
+      $group: {
+        _id: '$tour',
+        nRating: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ]);
+
+  await Tour.findByIdAndUpdate(tourId, {
+    ratingsQuantity: stats.length ? stats[0].nRating : 0,
+    ratingsAverage: stats.length ? stats[0].avgRating : 4.5,
+  });
+};
+
+// collection mai save nai hua hoga so pre ni use kar sakte
+reviewSchema.post('save', async function () {
+  //this.constructor points to modal
+  this.constructor.calcAverageRatings(this.tour);
+});
+//this users catches findByIdAndUpdate & findById&Delete
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.r = await this.findOne();
+  //update the this and use it in the post middleware
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  console.log('post');
+  await this.r.constructor.calcAverageRatings(this.r.tour);
 });
 
 const Review = mongoose.model('Review', reviewSchema);
