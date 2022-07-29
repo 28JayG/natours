@@ -31,6 +31,12 @@ router
   );
 
 router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(TourControllers.getToursWithin);
+
+router.route('/distances/:latlng/unit/:unit').get(TourControllers.getDistances);
+
+router
   .route('/:id')
   .get(TourControllers.getTour)
   .patch(

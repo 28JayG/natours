@@ -66,6 +66,8 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
   });
 };
 
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 // collection mai save nai hua hoga so pre ni use kar sakte
 reviewSchema.post('save', async function () {
   //this.constructor points to modal

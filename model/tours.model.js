@@ -111,8 +111,9 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
-tourSchema.index({ price: 1, ratingsAverage: -1 });//indexing helps improve reading performance
+tourSchema.index({ price: 1, ratingsAverage: -1 }); //indexing helps improve reading performance
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' }); // index to a 2d sphere
 // indexing access patterns dekh kar karna, warna index ka size bahut bada hojata hai
 // high write/read ratio mai indexing sahi nai rahega
 
@@ -164,10 +165,10 @@ tourSchema.post(/^find/, function (doc, next) {
 });
 
 //Aggregation Middleware:
-tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  next();
-});
+// tourSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 
